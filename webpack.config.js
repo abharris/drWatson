@@ -9,6 +9,8 @@ const autoprefixer = require('autoprefixer');
 
 const finalCSSLoader = (env === 'production') ? MiniCssExtractPlugin.loader : { loader: 'style-loader' };
 
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
+
 module.exports = {
   mode: env,
   entry: ['babel-polyfill', './src'], // this is where our app lives
@@ -70,6 +72,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: './index.html',
+    }),
+    // Make sure that the plugin is after any plugins that add images
+    new ImageminPlugin({
+      disable: process.env.NODE_ENV !== 'production', // Disable during development
+      pngquant: {
+        quality: '95-100',
+      },
     }),
   ],
 };
